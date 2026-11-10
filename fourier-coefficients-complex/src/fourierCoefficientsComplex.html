@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <title>Fourier Coefficients: Complex with Sound</title>
+    <link href="css/vendor/katex.css" rel="stylesheet">
+    <link href="css/fourier-coefficients-complex.css" rel="stylesheet">
+    <script src="js/vendor/require.js"></script>
+    <script>
+      requirejs.config({
+        baseUrl: 'js'
+      });
+      // Load common code then load the application
+      require(['lib/common'], function () {
+        require(['app/fourierCoefficientsComplex']);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="daimp-tool-header">
+      <div class="daimp-title">FOURIER COEFFICIENTS: COMPLEX WITH SOUND</div>
+      <div class="daimp-projection-link">
+        <a id="projection-link" href="#">mode</a>
+      </div>
+      <div class="daimp-help-link">
+        <a id="help-link" href="#">+ help</a>
+      </div>
+      <div id="help-text" class="daimp-help-text">
+        <p>
+          Coefficients \(c_n\) in the complex Fourier series
+        </p>
+        <p>
+          \[
+            f(t) = \cdots + c_{-2} e^{-4i\pi\nu t} + c_{-1} e^{-2i\pi\nu t}
+                   + c_0 + c_1 e^{2i\pi\nu t} + c_2 e^{4i\pi\nu t} + \cdots
+          \]
+        </p>
+        <p>
+          are selected using the windows at bottom. The windows at lower right
+          record the values of \(|c_n|\) and \(\text{Arg}(c_n)\) by yellow disks
+          and struts. The disk and strut for the chosen value of \(n\) are gray.
+          A mouse click on either window at lower right sets the value of \(n\),
+          and also the value of either \(|c_n|\) or \(\text{Arg}(c_n)\). Keep
+          the mouse button depressed and drag the cursor to reset several values
+          of \(|c_n|\) or \(\text{Arg}(c_n)\). Sliders at left also control
+          these values.
+        </p>
+        <p>
+          The window at lower left records the value of \(c_n\) on the complex
+          plane, and the value of \(c_n\) can be chosen by a click and drag on
+          that window.
+        </p>
+        <p>
+          A slider at lower right selects a value of a parameter \(\phi\). The
+          graphing window at the top displays the graph of
+          \(\text{Re}(e^{-i\phi}f(t))\). Thus if \(\phi = 0\), the real part of
+          \(f(t)\) is displayed, while if \(\phi = \frac{\pi}{2}\), the
+          imaginary part of \(f(t)\) is displayed. Red vertical lines on this
+          window also mark \(t = -L\) and \(t = +L\), where
+          \(L = \frac{1}{2\nu}\), so that \(2L\) is the period. Rolling the
+          cursor over the graphing window produces crosshairs and a readout of
+          the values of \(t\) and \(x\). Depressing the mousekey suppresses the
+          crosshairs.
+        </p>
+        <p>
+          At the top, a \([f(t) \space \text{real}]\) key toggles the
+          restriction on the values of the coefficients making \(f(t)\) real
+          valued for \(n \gt 0\). When \([f(t) \space \text{real}]\) is
+          selected, \(c_{-n}\) is reset to equal the complex conjugate of
+          \(c_n\).
+        </p>
+        <p>
+          A slider at the top sets the frequency \(\nu\), in kilohertz.
+        </p>
+        <p>
+          At top right, a [Reset] key resets all the coefficients to zero.
+        </p>
+        <p>
+          A [Play]/[Pause] key toggles a sound production, at the frequency
+          \(\nu\) kilohertz.
+        </p>
+        <p>
+          Be sure the volume is low when [Play] is selected. Also be aware that
+          pure sine waves carry more energy than they sound like they do, and
+          prolonged exposure through headphones can damage the ear.
+        </p>
+        <p>
+          &copy; 2008 H. Miller and J.-M. Claus
+        </p>
+      </div>
+    </div>
+    <div id="daimp-tool-container" role="application"></div>
+  </body>
+</html>
