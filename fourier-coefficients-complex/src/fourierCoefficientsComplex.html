@@ -5,6 +5,7 @@
     <title>Fourier Coefficients: Complex with Sound</title>
     <link href="css/vendor/katex.css" rel="stylesheet">
     <link href="css/fourier-coefficients-complex.css" rel="stylesheet">
+    <link href="css/equation-panel.css" rel="stylesheet">
     <script src="js/vendor/require.js"></script>
     <script>
       requirejs.config({
@@ -85,10 +86,39 @@
           prolonged exposure through headphones can damage the ear.
         </p>
         <p>
-          &copy; 2008 H. Miller and J.-M. Claus
+          The box below the tool sets all the coefficients from a formula in
+          \(t\) (milliseconds) and \(f = \nu\) (kilohertz), for example
+          <code>cos(2pi (12f) t) + cos(2pi (13f) t + 2pi/3)</code>. The
+          coefficients are computed over one period \(1/\nu\), for
+          \(|n| \le 20\). Setting a formula also sets \(\phi = 0\).
+        </p>
+        <p>
+          &copy; 2008 H. Miller and J.-M. Claus. Equation box and phase-accurate
+          sound added in this modified version.
         </p>
       </div>
     </div>
     <div id="daimp-tool-container" role="application"></div>
+    <div id="equation-panel">
+      <div class="equation-row">
+        <label for="equation-input">f(t) =</label>
+        <input id="equation-input" type="text" spellcheck="false" autocomplete="off"
+               placeholder="e.g. cos(2pi (12f) t) + cos(2pi (13f) t + 2pi/3) + cos(2pi (14f) t)">
+        <button id="equation-apply" type="button">Set coefficients</button>
+      </div>
+      <div class="equation-examples">
+        Examples:
+        <button type="button" data-formula="a(t) = cos(2pi (12f) t) + cos(2pi (13f) t + 2pi / 3) + cos(2pi (14f) t)">a(t)</button>
+        <button type="button" data-formula="b(t) = cos(2pi (12f) t) + cos(2pi (13f) t - 2pi / 3) + cos(2pi (14f) t)">b(t)</button>
+        <button type="button" data-formula="exp(2 pi i f t) + 0.5i exp(-4 pi i f t)">complex</button>
+        <button type="button" data-formula="t">sawtooth</button>
+      </div>
+      <div id="equation-message" role="status" aria-live="polite"></div>
+      <p class="equation-hint">
+        Use <code>t</code> (ms), <code>f</code> (= &nu;, kHz), <code>pi</code>, <code>i</code>, <code>e</code>,
+        <code>+ - * / ^</code> and <code>cos sin tan exp ln sqrt abs re im conj</code>.
+        Multiplication signs are optional: <code>2pi (12f) t</code>.
+      </p>
+    </div>
   </body>
 </html>

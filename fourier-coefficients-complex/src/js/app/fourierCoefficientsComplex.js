@@ -5,12 +5,16 @@
  *
  * Readable rewrite of the minified build at
  *   https://mathlets.org/javascript/build/js/app/fourierCoefficientsComplex.js
- * Same behavior as the original, except updateSound() (see its comment).
+ * Changes from the original:
+ *   - updateSound() plays the exact plotted waveform, phases included.
+ *   - MAX_N is 20 instead of 9, so harmonics up to n = 20 can be used.
+ *   - An equation box under the tool sets all c_n from a typed formula
+ *     (applyFormula, using app/expression.js).
  * Licensed under CC BY-NC-SA 3.0 — see LICENSE.md at the repo root.
  *
  * The tool shows the complex Fourier series
  *
- *   f(t) = sum_{n=-9..9} c_n e^{2 pi i n nu t},     c_n = |c_n| e^{i Arg(c_n)}
+ *   f(t) = sum_{n=-20..20} c_n e^{2 pi i n nu t},     c_n = |c_n| e^{i Arg(c_n)}
  *
  * and plots g(t) = Re(e^{-i phi} f(t)) = sum_n |c_n| cos(2 pi n nu t + Arg(c_n) - phi).
  * The [Play] button plays g(t) as a sound with fundamental frequency nu kHz.
@@ -42,6 +46,7 @@ define([
   'curve',
   'fourieraudio',
   'underscore',
+  'app/expression',
 ], function (
   utils,
   Tool,
@@ -55,12 +60,15 @@ define([
   Line,
   Curve,
   FourierAudio,
-  _
+  _,
+  Expression
 ) {
   'use strict';
 
-  // Coefficients c_n exist for n = -MAX_N .. MAX_N.
-  var MAX_N = 9;
+  // Coefficients c_n exist for n = -MAX_N .. MAX_N. (The original tool used 9.)
+  var MAX_N = 20;
+  // Spacing of the n-axis labels on the |c_n| and Arg(c_n) graphs.
+  var N_LABEL_STEP = MAX_N > 10 ? 5 : 1;
   // Largest allowed |c_n| (top of the magnitude graph / slider).
   var MAX_MAGNITUDE = 4;
 
@@ -372,6 +380,107 @@ define([
   }
 
   // ---------------------------------------------------------------------------
+  // Setting the coefficients from a formula
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Parse `text` as a function of t (ms) and f (= nu, kHz), compute its Fourier
+   * coefficients over one period 1/f, and load them into the tool.
+   * Sets phi to 0 so the graph shows the formula itself (its real part, if the
+   * formula is complex), and sets [f(t) real] to match the formula.
+   *
+   * @returns {{ok: boolean, message: string}}
+   */
+  function applyFormula(text) {
+    var f = frequencySlider.value;
+    if (!(f > 0)) {
+      return { ok: false, message: 'Set \u03bd above 0 first: the period is 1/\u03bd.' };
+    }
+
+    var result;
+    try {
+      result = Expression.fourierCoefficients(Expression.parse(text), f, MAX_N);
+    } catch (e) {
+      if (e instanceof Expression.ParseError) return { ok: false, message: e.message };
+      throw e;
+    }
+
+    realCheckbox.setChecked(false); // so setting one c_n doesn't overwrite c_-n
+    phiSlider.setValue(0);
+    var largest = null;
+    result.coefficients.forEach(function (c) {
+      terms[indexOfTerm(c.n)].setComplex(c.re, c.im);
+      var size = Math.sqrt(c.re * c.re + c.im * c.im);
+      if (c.n > 0 && size > 0 && (!largest || size > largest.size)) {
+        largest = { n: c.n, size: size };
+      }
+    });
+    realCheckbox.setChecked(result.isReal);
+    if (largest) focusTerm(largest.n);
+    focusedTerm().updateAllGraphs();
+    update();
+
+    var nonzero = result.coefficients.filter(function (c) {
+      return c.re !== 0 || c.im !== 0;
+    });
+    var notes = [];
+    if (nonzero.length === 0) {
+      notes.push('All coefficients are 0.');
+    } else {
+      var ns = nonzero.map(function (c) {
+        return c.n;
+      });
+      notes.push(
+        nonzero.length +
+          ' nonzero coefficient' +
+          (nonzero.length > 1 ? 's' : '') +
+          (ns.length <= 8
+            ? ': n = ' + ns.join(', ') + '.'
+            : ', for n from ' + ns[0] + ' to ' + ns[ns.length - 1] + '.')
+      );
+    }
+    if (result.droppedEnergy > 1e-4) {
+      notes.push(
+        'Only an approximation: ' +
+          (100 * result.droppedEnergy).toFixed(1) +
+          '% of the formula is in harmonics above |n| = ' +
+          MAX_N +
+          ', or the formula does not repeat every 1/\u03bd.'
+      );
+    }
+    if (result.maxMagnitude > MAX_MAGNITUDE) {
+      notes.push(
+        'Some |c_n| were larger than ' + MAX_MAGNITUDE + ' and were capped at ' + MAX_MAGNITUDE + '.'
+      );
+    }
+    return { ok: true, message: notes.join(' ') };
+  }
+
+  /** Wire up the HTML equation box below the tool (see the .html file). */
+  function buildEquationPanel() {
+    var input = document.getElementById('equation-input');
+    var button = document.getElementById('equation-apply');
+    var message = document.getElementById('equation-message');
+    if (!input || !button || !message) return;
+
+    function apply() {
+      var result = applyFormula(input.value);
+      message.textContent = result.message;
+      message.className = result.ok ? 'equation-ok' : 'equation-error';
+    }
+    button.addEventListener('click', apply);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') apply();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-formula]'), function (el) {
+      el.addEventListener('click', function () {
+        input.value = el.getAttribute('data-formula');
+        apply();
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // Event handlers
   // ---------------------------------------------------------------------------
 
@@ -433,6 +542,7 @@ define([
 
     focusTerm(1);
     update();
+    buildEquationPanel();
 
     // Keyboard tab order, as indices into the components in the order they were
     // added with tool.add(...):
@@ -537,8 +647,9 @@ define([
     // |c_n| bars. Clicking picks n (nearest integer) and sets |c_n|.
     magnitudeGraph = new Graph(waveGraph.x + waveGraph.width - 340, complexPlane.y, 340, 75);
     magnitudeGraph.setPlottingBounds(-MAX_N, MAX_N, 0, MAX_MAGNITUDE);
-    magnitudeGraph.setXLongTicks(1);
-    magnitudeGraph.setAutomaticXLabels(1, 0, false);
+    magnitudeGraph.setXShortTicks(1);
+    magnitudeGraph.setXLongTicks(N_LABEL_STEP);
+    magnitudeGraph.setAutomaticXLabels(N_LABEL_STEP, 0, false);
     magnitudeGraph.setXAxis(0);
     magnitudeGraph.setXText('n');
     magnitudeGraph.setYShortTicks(0.5);
@@ -557,8 +668,9 @@ define([
     // Arg(c_n) bars, 0 .. 2 pi.
     argGraph = new Graph(magnitudeGraph.x, complexPlane.y + complexPlane.height - 75, 340, 75);
     argGraph.setPlottingBounds(-MAX_N, MAX_N, 0, utils.TWO_PI);
-    argGraph.setXLongTicks(1);
-    argGraph.setAutomaticXLabels(1, 0, false);
+    argGraph.setXShortTicks(1);
+    argGraph.setXLongTicks(N_LABEL_STEP);
+    argGraph.setAutomaticXLabels(N_LABEL_STEP, 0, false);
     argGraph.setXAxis(0);
     argGraph.setXText('n');
     argGraph.setYShortTicks(utils.PI_DIV_2);

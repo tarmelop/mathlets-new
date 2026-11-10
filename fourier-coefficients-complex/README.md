@@ -30,6 +30,8 @@ Then open http://localhost:8777/fourierCoefficientsComplex.html
 | --- | --- |
 | `src/fourierCoefficientsComplex.html` | Page shell + help text; loads `lib/common` then the app |
 | `src/js/app/fourierCoefficientsComplex.js` | **The mathlet.** Hand-rewritten with real names and comments |
+| `src/js/app/expression.js` | Formula parser and Fourier-coefficient calculator for the equation box (new) |
+| `src/css/equation-panel.css` | Styles for the equation box (new) |
 | `src/js/lib/fourieraudio.js` | Web Audio wrapper that plays a waveform from Fourier coefficients. Hand-rewritten |
 | `src/js/lib/common.js` | RequireJS config mapping module names (`graph`, `vslider`, …) to files |
 | `src/js/lib/*.js`, `src/js/lib/shapes/*.js` | Shared SVG widget library (graphs, sliders, text, shapes). Split out of the minified `common.js` and auto-formatted; local variable names are still the minifier's |
@@ -45,3 +47,14 @@ Audio normalize the wave by its peak. Now `updateSound` combines the `n` and `�
 terms into exact cosine/sine coefficients, so the sound is exactly the plotted
 `g(t)`. It also does its own normalization so that phase changes don't turn into
 volume changes. See the comment above `updateSound` in the app file.
+
+## Equation box and more harmonics
+
+- `MAX_N` (top of the app file) is now **20** instead of 9, so harmonics up to
+  n = 20 can be used. Change it there to use more or fewer.
+- Below the tool, type a formula in `t` (ms) and `f` (= ν, kHz), e.g.
+  `cos(2pi (12f) t) + cos(2pi (13f) t + 2pi/3) + cos(2pi (14f) t)`, and press
+  Enter. `applyFormula` samples it over one period 1/ν, computes c_n for
+  |n| ≤ MAX_N, loads them, sets φ = 0 and ticks [f(t) real] if the formula is
+  real. It warns if part of the formula doesn't fit (higher harmonics, or not
+  periodic with period 1/ν) or if some |c_n| exceed 4 (the tool's limit).
