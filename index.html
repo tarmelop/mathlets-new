@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mathlets (editable copies)</title>
+  <style>
+    :root { --bg: #ffffff; --fg: #1d2330; --muted: #5b6475; --accent: #1f4e8c; --line: #dfe3ea; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #14171d; --fg: #e6e9ef; --muted: #9aa3b2; --accent: #8fb6ff; --line: #2c323d; }
+    }
+    body { margin: 0; background: var(--bg); color: var(--fg);
+           font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
+    h1 { font-size: 1.8rem; margin: 0 0 8px; }
+    p { color: var(--muted); }
+    a { color: var(--accent); }
+    .card { border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin: 28px 0; }
+    .card h2 { margin: 0 0 4px; font-size: 1.2rem; }
+    .card p { margin: 6px 0 12px; }
+    .links a { margin-right: 18px; white-space: nowrap; }
+    footer { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 16px; font-size: 0.9rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mathlets (editable copies)</h1>
+    <p>Readable, editable versions of <a href="https://mathlets.org/mathlets/">MIT Mathlets</a>,
+       rebuilt from the minified builds published on mathlets.org.
+       Source code: <a href="https://github.com/tarmelop/mathlets-new">github.com/tarmelop/mathlets-new</a>.</p>
+
+    <div class="card">
+      <h2>Fourier Coefficients: Complex with Sound</h2>
+      <p>© 2008 H. Miller and J.-M. Claus, MIT Mathlets.
+         The modified version plays the exact plotted waveform, including the phases Arg(c<sub>n</sub>) and φ.</p>
+      <div class="links">
+        <a href="fourier-coefficients-complex/src/fourierCoefficientsComplex.html">Open (modified)</a>
+        <a href="fourier-coefficients-complex/original/fourierCoefficientsComplex.html">Open (original)</a>
+        <a href="https://mathlets.org/mathlets/fourier-coefficients-complex/">On mathlets.org</a>
+      </div>
+    </div>
+
+    <footer>
+      All design, mathematics and original code belong to the MIT Mathlets authors
+      (site © 2009–2015 H. Miller, <a href="https://mathlets.org/">mathlets.org</a>).
+      Shared under <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/">CC BY-NC-SA 3.0</a>,
+      as stated on mathlets.org; see <a href="https://github.com/tarmelop/mathlets-new/blob/main/LICENSE.md">LICENSE.md</a>.
+    </footer>
+  </main>
+</body>
+</html>
