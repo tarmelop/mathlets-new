@@ -10,7 +10,10 @@
  *
  * Signal path: oscillator -> gain (volume) -> speakers.
  *
- * Readable rewrite of the "fourieraudio" module in the minified common.js.
+ * Readable rewrite of the "fourieraudio" module in the minified common.js of the
+ * MIT Mathlets shared library (https://mathlets.org/). Original code by the MIT
+ * Mathlets authors; the only functional change is the optional
+ * `disableNormalization` flag. Licensed under CC BY-NC-SA 3.0 — see LICENSE.md.
  */
 define(['utils'], function (utils) {
   'use strict';

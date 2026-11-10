@@ -1,4 +1,5 @@
-// Shared RequireJS configuration: maps module names to files.
+// Shared RequireJS configuration for the MIT Mathlets library (https://mathlets.org/): maps module names to files.
+// Original code by the MIT Mathlets authors. Licensed under CC BY-NC-SA 3.0 — see LICENSE.md at the repo root.
 requirejs.config({
   paths: {
     button: 'lib/button',

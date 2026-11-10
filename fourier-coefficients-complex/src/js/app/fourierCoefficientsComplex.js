@@ -1,9 +1,12 @@
 /*
  * Fourier Coefficients: Complex with Sound
- * (c) 2008 H. Miller and J.-M. Claus — MIT Mathlets
+ * Original mathlet (c) 2008 H. Miller and J.-M. Claus — MIT Mathlets
+ *   https://mathlets.org/mathlets/fourier-coefficients-complex/
  *
  * Readable rewrite of the minified build at
  *   https://mathlets.org/javascript/build/js/app/fourierCoefficientsComplex.js
+ * Same behavior as the original, except updateSound() (see its comment).
+ * Licensed under CC BY-NC-SA 3.0 — see LICENSE.md at the repo root.
  *
  * The tool shows the complex Fourier series
  *

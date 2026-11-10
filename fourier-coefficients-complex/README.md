@@ -4,6 +4,11 @@ Editable copy of the MIT Mathlet at
 https://mathlets.org/mathlets/fourier-coefficients-complex/
 (the applet itself is `https://mathlets.org/javascript/build/fourierCoefficientsComplex.html`).
 
+**Original authors: © 2008 H. Miller and J.-M. Claus, [MIT Mathlets](https://mathlets.org/).**
+All design, mathematics and original code are theirs; this copy only makes the
+code readable and changes how the sound is generated (see below).
+Licensed under CC BY-NC-SA 3.0, like the original site content — see [../LICENSE.md](../LICENSE.md).
+
 - `original/` – the files exactly as downloaded from mathlets.org (minified), for reference.
 - `src/` – the readable, working version. Edit this one.
 
